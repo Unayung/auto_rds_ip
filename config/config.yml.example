@@ -1,0 +1,4 @@
+access_key_id: "id_blahblahblah"
+secret_access_key: "key_blahblah"
+end_point: "rds.ap-northeast-1.amazonaws.com"
+security_group_name: "default"
