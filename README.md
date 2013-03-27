@@ -9,7 +9,6 @@ we use amazon's aws-sdk-ruby for manipulating AWS RDS
 
 1. gem install aws-sdk
 2. gem install sanitize
-3. gem install open-uri
 
 ### Usage
 
