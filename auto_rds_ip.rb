@@ -1,5 +1,5 @@
 require "aws-sdk"
-require "yaml"
+# require "yaml"
 require "sanitize"
 require "open-uri"
 
@@ -15,17 +15,17 @@ config["end_points"].each do |end_point|
     :rds_endpoint => end_point
   })
   rds = AWS::RDS.new
-  puts "==== Checking IP Address at #{Time.now} ===="
+  puts "==== Checking IP Address record for #{end_point} at #{Time.now} ===="
 ### 2. get current ip and check if changed ###
   ip_prompt = open("http://checkip.dyndns.org").readline
   current_ip = Sanitize.clean(ip_prompt).match(/\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b/).to_s
-  old_ip = File.open("#{File.dirname(__FILE__)}/old_ip.txt", "r").size > 0 ? File.open("#{File.dirname(__FILE__)}/old_ip.txt", "r").readline.chomp : "192.168.0.1"
+  old_ip = File.open("#{File.dirname(__FILE__)}/#{end_point}_ip.txt", "a").size > 0 ? File.open("#{File.dirname(__FILE__)}/#{end_point}_ip.txt", "r").readline.chomp : "192.168.0.1"
 
   if old_ip == current_ip
     abort("==== IP address didn't change, happy coding :) ====")
   else
     puts("==== IP address changed, will do the rest for you ====")
-    File.open("#{File.dirname(__FILE__)}/old_ip.txt", "w") do |file|  
+    File.open("#{File.dirname(__FILE__)}/#{end_point}_ip.txt", "w") do |file|  
       file.puts "#{current_ip}"  
     end
   end
@@ -54,5 +54,5 @@ config["end_points"].each do |end_point|
     rds.client.authorize_db_security_group_ingress(:db_security_group_name => config["security_group_name"], :cidrip => "#{current_ip}/32")
     puts "==== current ip #{current_ip} authorized, have fun coding :) ===="
   end
-  
+
 end
